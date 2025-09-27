@@ -32,7 +32,7 @@ public class VelocityPID extends LinearOpMode{
         double measuredVelocity = motor.getVelocity();
 
 
-            // The error * sign (which is direction)
+            // The error - sign (which finds velocity)
             double error = targetVelocity - measuredVelocity;
 
             // We use zero because we already calculate for error
