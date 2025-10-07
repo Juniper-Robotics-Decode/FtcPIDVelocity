@@ -1,43 +1,51 @@
 package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Config
+@TeleOp
 public class VelocityPID extends LinearOpMode{
     DcMotorEx motor;
-    static public double vP = 0.0;
-    static public double vI = 0.0;
-    static public double vD = 0.0;
-    static public double vF = 0.0;
+    public static double vP = 0.0, vI = 0.0, vD = 0.0, vF = 0.0;
 
-    public double targetVelocity = 0;
+    public static double targetVelocity = 6969;
 
     private PIDFController pidfController;
+
+    double measuredVelocity;
 
     @Override
     public void runOpMode(){
         motor = hardwareMap.get(DcMotorEx.class, "Motor");
-        pidfController = new PIDFController(0,0,0,0);
+        pidfController = new PIDFController(vP,vI,vD,vF);
+        this.telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         waitForStart();
         while (opModeIsActive()){
+            measuredVelocity = motor.getVelocity();
             updatePID();
+            telemetry.addData("currentVelocity", measuredVelocity);
+            telemetry.addData("targetVelocity", targetVelocity);
+            telemetry.update();
         }
     }
 
     public void updatePID() { // This method is used to update position every loop.
 
-        double measuredVelocity = motor.getVelocity();
-
-
             // The error - sign (which finds velocity)
             double error = targetVelocity - measuredVelocity;
 
             // We use zero because we already calculate for error
-            double power = pidfController.calculate(0, error);
-            motor.setVelocity(power);
+            double power = pidfController.calculate(error, 0);
+            motor.setPower(power);
         }
-
 }
