@@ -34,11 +34,8 @@ public class VelocityPID extends LinearOpMode{
         waitForStart();
         while (opModeIsActive()){
             measuredVelocity = motor.getVelocity();
-            //motor.setPower(1);
             updatePID();
             telemetry.addData("currentVelocity", measuredVelocity*-1);
-            //telemetry.addData("currentVelocity in radians", motor.getVelocity(RADIANS)*-1);
-            //telemetry.addData("currentVelocity in RPM", Math.abs(motor.getVelocity(RADIANS)*60/(2*3.14)));
             telemetry.addData("targetVelocity", targetVelocity);
             telemetry.update();
         }
