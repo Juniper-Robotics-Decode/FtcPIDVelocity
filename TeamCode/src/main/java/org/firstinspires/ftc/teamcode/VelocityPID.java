@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -16,9 +18,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @TeleOp
 public class VelocityPID extends LinearOpMode{
     DcMotorEx motor;
-    public static double vP = 0.0, vI = 0.0, vD = 0.0, vF = 0.0;
+    public static double vP = 0.4997, vI = 0.006, vD = 0.0, vF = 0.0;
 
-    public static double targetVelocity = 6969;
+    public static double targetVelocity = Math.abs((double) 2000 /60*2*Math.PI);
 
     private PIDFController pidfController;
 
@@ -32,8 +34,11 @@ public class VelocityPID extends LinearOpMode{
         waitForStart();
         while (opModeIsActive()){
             measuredVelocity = motor.getVelocity();
+            //motor.setPower(1);
             updatePID();
-            telemetry.addData("currentVelocity", measuredVelocity);
+            telemetry.addData("currentVelocity", measuredVelocity*-1);
+            //telemetry.addData("currentVelocity in radians", motor.getVelocity(RADIANS)*-1);
+            //telemetry.addData("currentVelocity in RPM", Math.abs(motor.getVelocity(RADIANS)*60/(2*3.14)));
             telemetry.addData("targetVelocity", targetVelocity);
             telemetry.update();
         }
@@ -46,6 +51,6 @@ public class VelocityPID extends LinearOpMode{
 
             // We use zero because we already calculate for error
             double power = pidfController.calculate(error, 0);
-            motor.setPower(power);
+            motor.setVelocity(power,RADIANS);
         }
 }
