@@ -19,9 +19,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @TeleOp
 public class VelocityPID extends LinearOpMode{
     DcMotorEx motor;
-    public static double vP = 0.4997, vI = 0.006, vD = 0.0, vF = 0.0;
+    public static double vP = 0.0011, vI = 0.01, vD = 0.0, vF = 0.0;
 
-    public static double targetVelocity = Math.abs((double) 2000 /60*2*Math.PI);
+    public static double velocity = 2000;
+
+    public static double targetVelocity = Math.abs((double) velocity /60*2*Math.PI);
 
     private PIDFController pidfController;
 
