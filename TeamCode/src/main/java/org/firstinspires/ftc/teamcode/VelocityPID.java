@@ -19,9 +19,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @TeleOp
 public class VelocityPID extends LinearOpMode{
     DcMotorEx motor;
-    public static double vP = 0.0011, vI = 0.01, vD = 0.0, vF = 0.0;
+    public static double vP=0.001, vI=0, vD=0, vF=0;
 
-    public static double velocity = 2000;
+    public static double velocity = 12000;
 
     public static double targetVelocity = Math.abs((double) velocity /60*2*Math.PI);
 
@@ -32,13 +32,15 @@ public class VelocityPID extends LinearOpMode{
     @Override
     public void runOpMode(){
         motor = hardwareMap.get(DcMotorEx.class, "Motor");
-        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motor.setDirection(DcMotorSimple.Direction.REVERSE);
         pidfController = new PIDFController(vP,vI,vD,vF);
         this.telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         waitForStart();
         while (opModeIsActive()){
+            pidfController.setPIDF(vP,vI,vD,vF);
             measuredVelocity = motor.getVelocity();
             updatePID();
+            telemetry.addData("p = ", pidfController.getP());
             telemetry.addData("currentVelocity", measuredVelocity*-1);
             telemetry.addData("targetVelocity", targetVelocity);
             telemetry.update();
