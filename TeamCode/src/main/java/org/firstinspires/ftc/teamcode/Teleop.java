@@ -1,0 +1,42 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@TeleOp
+@Config
+public class Teleop extends LinearOpMode {
+
+
+    private Intaketransferhwmap hwmap;
+    private GamepadEx gamepad;
+    private IntakeFSM intakeFSM;
+
+    @Override
+
+    public void runOpMode() throws InterruptedException {
+
+        this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        hwmap = new Intaketransferhwmap(hardwareMap);
+        gamepad = new GamepadEx(gamepad1);
+        intakeFSM = new IntakeFSM(hwmap, telemetry);
+
+        waitForStart();
+        while(opModeIsActive()){
+            telemetry.update();
+            gamepad.readButtons();
+            intakeFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.Y), (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)));
+
+
+        }
+
+    }
+}
