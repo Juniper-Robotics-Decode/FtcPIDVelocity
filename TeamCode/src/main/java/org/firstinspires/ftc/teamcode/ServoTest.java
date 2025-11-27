@@ -8,21 +8,20 @@ import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.concurrent.TimeUnit;
 
 @TeleOp
 @Config
-public class TransferServo extends LinearOpMode {
+public class ServoTest extends LinearOpMode {
     public Servo transferServo;
     public static double position = 0;
 
     public void runOpMode() {
+        transferServo.setDirection(Servo.Direction.REVERSE);
         Timing.Timer timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        transferServo = hardwareMap.get(Servo.class, "TS");
+        transferServo = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "TS");
 
         if (gamepad2.dpad_up) {
             transferServo.setPosition(.25);
@@ -36,14 +35,15 @@ public class TransferServo extends LinearOpMode {
 
         while (opModeIsActive()) {
             double percentError = Math.abs((transferServo.getPosition() - position) / position);
-            if (!timer.isTimerOn() && percentError >= 0.001) {
+            if (!timer.isTimerOn() && percentError >= 0.001) { //&& percentError >= 0.001
                 transferServo.setPosition(position);
                 timer.start();
             }
-
+            telemetry.addData("Timer is on : ", timer.isTimerOn());
+            telemetry.addData("Timer is done  : ", timer.done());
             if (timer.done()) {
                 timer.pause();
-                telemetry.addData("Position Reached: ", true);
+                telemetry.addData("Position Reached: ", true);   // target pos - x, target pos - y
             } else {
                 telemetry.addData("Position Reached: ", false);
             }

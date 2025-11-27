@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class RollerFSM {
     public static MotorEx Roller;
     private Telemetry telemetry;
-    public State State; // If transfer servo is moving, eject and if intake has signiciant veolcity drop becuase of third ball eject
+    public static State State; // If transfer servo is moving, eject and if intake has signiciant veolcity drop becuase of third ball eject
     private final MotorWrapper intakeMotor;
     public static double kS = 0, kV = 1.2, kA = 0;
     public static double p = 0.15, i = 0, d = 0;

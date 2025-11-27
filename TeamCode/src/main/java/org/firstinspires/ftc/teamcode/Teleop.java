@@ -19,6 +19,7 @@ public class Teleop extends LinearOpMode {
     private Intaketransferhwmap hwmap;
     private GamepadEx gamepad;
     private IntakeFSM intakeFSM;
+    private TransferFSM transferFSM;
 
     @Override
 
@@ -28,13 +29,14 @@ public class Teleop extends LinearOpMode {
         hwmap = new Intaketransferhwmap(hardwareMap);
         gamepad = new GamepadEx(gamepad1);
         intakeFSM = new IntakeFSM(hwmap, telemetry);
+        transferFSM = new TransferFSM(hwmap, telemetry);
 
         waitForStart();
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
             telemetry.update();
             gamepad.readButtons();
             intakeFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.Y), (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)));
-
+            transferFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT),(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)));
 
         }
 
