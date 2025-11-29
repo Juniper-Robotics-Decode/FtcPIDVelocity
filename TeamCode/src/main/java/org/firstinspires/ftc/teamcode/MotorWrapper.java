@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class MotorWrapper {
     private final MotorEx motorEx;
     private double lastReadVelocity;
@@ -89,6 +91,9 @@ public class MotorWrapper {
     }
 
 
+    public double getCurrent() {
+        return motorEx.motorEx.getCurrent(CurrentUnit.AMPS);
+    }
 }
 
 

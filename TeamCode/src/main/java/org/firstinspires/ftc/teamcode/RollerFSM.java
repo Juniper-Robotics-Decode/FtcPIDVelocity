@@ -1,22 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.VelocityController.kA;
-import static org.firstinspires.ftc.teamcode.VelocityController.kS;
-import static org.firstinspires.ftc.teamcode.VelocityController.kV;
-import static org.firstinspires.ftc.teamcode.VelocityPID.vD;
-import static org.firstinspires.ftc.teamcode.VelocityPID.vI;
-import static org.firstinspires.ftc.teamcode.VelocityPID.vP;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+
+
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 @Config
 public class RollerFSM {
-    public static MotorEx Roller;
+    public static DcMotorEx Roller;
     private Telemetry telemetry;
     public static State State; // If transfer servo is moving, eject and if intake has signiciant veolcity drop becuase of third ball eject
     private final MotorWrapper intakeMotor;
@@ -33,6 +27,7 @@ public class RollerFSM {
         STOPPED,
         INTAKING,
         EJECTING,
+        JAMMED
     }
 
 
@@ -57,13 +52,18 @@ public class RollerFSM {
 
         }
 
+        if (intakeMotor.getVelocity() < 1000 && intakeMotor.getCurrent() > 2) {
+            State = State.JAMMED;
+        }
+
 
         intakeMotor.readVelocity();
         intakeMotor.setVelocityConstants(p, i, d, kS, kV, kA);
         updatePID();
         telemetry.addData("Roller FSM State ", State);
-        telemetry.addData("Current Veolcity ", currentVelocity);
+        telemetry.addData("Current Velocity ", currentVelocity);
         telemetry.addData("Target Velocity ", targetVelocity);
+        telemetry.addData("Current Amount ", intakeMotor.getCurrent());
     }
 
 
@@ -96,6 +96,10 @@ public class RollerFSM {
 
     public boolean EJECTING() {
         return State == State.EJECTING;
+    }
+
+    public boolean JAMMED() {
+        return State == State.JAMMED;
     }
 
 }

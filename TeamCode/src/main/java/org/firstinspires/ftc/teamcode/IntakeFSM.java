@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.RollerFSM.State.JAMMED;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
@@ -12,7 +14,7 @@ public class IntakeFSM {
         STOPPING,
         READY_TO_INTAKE,
         EJECTING,
-        STOPPED
+        STOPPED,
     }
 
     private RollerFSM Roller;
@@ -48,6 +50,7 @@ public class IntakeFSM {
                     currentState = State.STOPPED;
                 }
                 break;
+
         }
         telemetry.addData("Current State ", currentState);
 
@@ -59,6 +62,10 @@ public class IntakeFSM {
             currentState = State.RAMPING_UP_TO_EJECT;
         } else if (YPress && currentState == State.EJECTING) {
             currentState = State.RAMPING_UP_TO_INTAKE;
+        }
+
+        if (Roller.JAMMED()){
+            currentState = State.RAMPING_UP_TO_EJECT;
         }
 
         if (D_Pad_Left_Press && (currentState == State.READY_TO_INTAKE || currentState == State.EJECTING)) {
