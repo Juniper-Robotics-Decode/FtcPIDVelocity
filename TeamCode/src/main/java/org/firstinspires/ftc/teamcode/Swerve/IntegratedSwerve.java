@@ -30,6 +30,8 @@ import org.firstinspires.ftc.teamcode.Hardware.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.IntakeFSM;
 import org.firstinspires.ftc.teamcode.Intaketransferhwmap;
 import org.firstinspires.ftc.teamcode.TransferFSM;
+import org.firstinspires.ftc.teamcode.finitestatemachine.ShooterFSM;
+import org.firstinspires.ftc.teamcode.finitestatemachine.wrappers.HWMap;
 
 import java.util.Arrays;
 
@@ -56,8 +58,8 @@ public class IntegratedSwerve extends LinearOpMode {
 
     private AbsoluteAnalogEncoder AFLE, AFRE, ABLE, ABRE;
     public static double zeros[] = new double[]{0.2, 0.3, -0.2, 0.15};
-    public static boolean inverses[] = new boolean[]{false,false,false,false};
-    public static double MotorScaling[] = new double[]{-1,-1,-1,-1};
+    public static boolean inverses[] = new boolean[]{true,false,false,true};
+    public static double MotorScaling[] = new double[]{1,1,1,1};
 
     GoBildaPinpointDriver odo;
 
@@ -78,10 +80,12 @@ public class IntegratedSwerve extends LinearOpMode {
 
     private double MAX;
 
-    private Intaketransferhwmap hwmap;
+    private Intaketransferhwmap intaketransferhwmap;
+  //  private HWMap hwMap;
     //private GamepadEx gamepad;
     private IntakeFSM intakeFSM;
     private TransferFSM transferFSM;
+    //private ShooterFSM shooterFSM;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -147,9 +151,10 @@ public class IntegratedSwerve extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        hwmap = new Intaketransferhwmap(hardwareMap);
-        intakeFSM = new IntakeFSM(hwmap, telemetry);
-        transferFSM = new TransferFSM(hwmap, telemetry);
+        intaketransferhwmap = new Intaketransferhwmap(hardwareMap);
+        intakeFSM = new IntakeFSM(intaketransferhwmap, telemetry);
+        transferFSM = new TransferFSM(intaketransferhwmap, telemetry);
+        //shooterFSM = new ShooterFSM(hwMap,telemetry);
 
 
         waitForStart();
@@ -223,6 +228,7 @@ public class IntegratedSwerve extends LinearOpMode {
 
             intakeFSM.updateState(gamepad1.y, gamepad1.dpad_left);
             transferFSM.updateState(gamepad1.dpad_right, gamepad1.right_bumper);
+            //shooterFSM.updateState(gamepad1.b);
 
 
             telemetry.addData("front left target angle", Arrays.toString(wa));

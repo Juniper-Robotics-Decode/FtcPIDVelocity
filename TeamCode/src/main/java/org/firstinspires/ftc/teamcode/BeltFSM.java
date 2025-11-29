@@ -16,7 +16,7 @@ public class BeltFSM {
     private Telemetry telemetry;
     private MotorWrapper transferMotor;
     public static double power = .8;
-    public static double movePower = -1;
+    public static double movePower = 1;
     public static double stopPower = 0;
 
     public State State;
