@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.RollerFSM.State.JAMMED;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 public class IntakeFSM {
-
 
     enum State {
         RAMPING_UP_TO_INTAKE,

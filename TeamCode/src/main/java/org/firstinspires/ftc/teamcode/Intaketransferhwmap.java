@@ -31,7 +31,3 @@ public class Intaketransferhwmap {
         return transferServo;
     }
 }
-
-
-
-

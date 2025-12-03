@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+
 import com.arcrobotics.ftclib.util.Timing;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,22 +14,21 @@ public class TransferServoFSM {
     public enum State {
         MOVING_TO_POSITION,
         AT_UP,
-        AT_DOWN
+        AT_DOWN,
+        MOVING_DOWN
     }
 
     private Telemetry telemetry;
     private ServoWrapper transferServo;
     public State currentState;
-    public double currentPosition = 0;
     public static double targetPosition = 0;
     public static double positionUp = .25;
     public static double positionDown = 0;
-    Timing.Timer timer;
-
+    Timing.Timer postitionTimer;
 
     public TransferServoFSM(Intaketransferhwmap intaketransferhwmap, Telemetry telemetry) {
         transferServo = new ServoWrapper(intaketransferhwmap.getTransferServo());
-        timer = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+        postitionTimer = new Timing.Timer(150, TimeUnit.MILLISECONDS); // Original length 1000
         this.telemetry = telemetry;
         currentState = State.AT_DOWN;
     }
@@ -36,22 +36,22 @@ public class TransferServoFSM {
     public void updateState() {
 
 
-        telemetry.addData("Current Position  ", transferServo.getPosition());
-        telemetry.addData("Elapsed Time: ", timer.elapsedTime());
-        telemetry.addData("Target Postion ", targetPosition);
+        telemetry.addData("Current Position ", transferServo.getPosition());
+        telemetry.addData("Elapsed Time ", postitionTimer.elapsedTime());
+        telemetry.addData("Target Position ", targetPosition);
         telemetry.addData("ServoFSM State ", currentState);
 
 
         double percentError = Math.abs((transferServo.getPosition() - targetPosition) / targetPosition);
         telemetry.addData("Percent Error", percentError);
-        if (!timer.isTimerOn() && percentError >= 0.001) {
+        if (!postitionTimer.isTimerOn() && percentError >= 0.001) {
             currentState = State.MOVING_TO_POSITION;
             transferServo.setPosition(targetPosition);
-            timer.start();
+            postitionTimer.start();
         }
 
-        if (timer.done()) {
-            timer.pause();
+        if (postitionTimer.done()) {
+            postitionTimer.pause();
             if (targetPosition == positionUp) {
                 currentState = State.AT_UP;
             }
@@ -62,7 +62,6 @@ public class TransferServoFSM {
                 currentState = State.AT_DOWN;
             }
             // else if(currentState = A)
-
         }
     }
 
@@ -82,6 +81,3 @@ public class TransferServoFSM {
         targetPosition = positionDown;
     }
 }
-
-
-

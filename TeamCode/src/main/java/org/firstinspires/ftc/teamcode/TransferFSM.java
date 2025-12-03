@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.util.Timing;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class TransferFSM {
+import java.util.concurrent.TimeUnit;
 
+public class TransferFSM {
 
     public enum State {
         MOVING_DOWN,
@@ -20,12 +23,13 @@ public class TransferFSM {
     private BeltFSM Belt;
     private Telemetry telemetry;
     private TransferServoFSM transferServoFSM;
-
+    Timing.Timer autoMoveTimer;
 
     public TransferFSM(Intaketransferhwmap hardwareMap, Telemetry telemetry) {
         Belt = new BeltFSM(hardwareMap, telemetry);
         this.telemetry = telemetry;
         transferServoFSM = new TransferServoFSM(hardwareMap, telemetry);
+        autoMoveTimer = new Timing.Timer(3, TimeUnit.SECONDS);
     }
 
     public void updateState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
@@ -43,6 +47,9 @@ public class TransferFSM {
                 break;
 
             case MOVING_DOWN:
+                if (!autoMoveTimer.isTimerOn()) {
+                    autoMoveTimer.start();
+                }
                 transferServoFSM.MoveDown();
                 if (transferServoFSM.AT_DOWN()) {
                     currentState = State.AT_DOWN;
@@ -64,6 +71,8 @@ public class TransferFSM {
                 break;
         }
         telemetry.addData("Transfer Current State ", currentState);
+        telemetry.addData("Auto Move Timer ", autoMoveTimer.elapsedTime());
+
     }
 
     public void findTargetState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
@@ -75,10 +84,15 @@ public class TransferFSM {
         }
         if (Right_Bumper && transferServoFSM.AT_UP()) {
             currentState = State.MOVING_DOWN;
-
         }
+
         if (Right_Bumper && transferServoFSM.AT_DOWN()) {
             currentState = State.MOVING_UP;
+        }
+
+        if (autoMoveTimer.done() && transferServoFSM.AT_UP()) {
+            autoMoveTimer.pause();
+            currentState = State.MOVING_DOWN;
         }
     }
 }

@@ -63,7 +63,3 @@ public class BeltFSM {
         return State == State.STOPPED;
     }
 }
-
-
-
-

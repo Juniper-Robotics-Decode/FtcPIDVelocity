@@ -95,6 +95,3 @@ public class MotorWrapper {
         return motorEx.motorEx.getCurrent(CurrentUnit.AMPS);
     }
 }
-
-
-
