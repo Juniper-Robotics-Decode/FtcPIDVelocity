@@ -38,8 +38,8 @@ public class FlywheelPIDTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            transferFSM.updateState(gamepad1.dpad_right, gamepad1.right_bumper);
-            intakeFSM.updateState(gamepad1.y, gamepad1.dpad_left);
+            transferFSM.updateState(gamepad1.dpad_right, gamepad1.right_bumper, gamepad1.x);
+            intakeFSM.updateState(gamepad1.y, gamepad1.dpad_left, gamepad1.x);
             updatePID();
             telemetry.addData("Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
             telemetry.addData("accel", motor.getAcceleration());

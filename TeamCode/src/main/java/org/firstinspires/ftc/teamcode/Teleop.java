@@ -34,8 +34,8 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.update();
             gamepad.readButtons();
-            intakeFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.Y), (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)));
-            transferFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT),(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)));
+            intakeFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.Y), (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)), gamepad.wasJustPressed(GamepadKeys.Button.X));
+            transferFSM.updateState(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT), (gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)), (gamepad.wasJustPressed(GamepadKeys.Button.X)));
 
         }
 

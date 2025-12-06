@@ -21,6 +21,8 @@ public class RollerFSM {
     public static double stoppingTargetVelocity = 0;
     public static double intakingTargetVelocity = 2790;
     public static double ejectingTargetVelocity = -1400;
+    public static double jammingCurrentThreshhold = 5;
+    public static double jammingVelocityThreshold = 1000;
 
 
     public enum State {
@@ -52,7 +54,7 @@ public class RollerFSM {
 
         }
 
-        if (intakeMotor.getVelocity() < 1000 && intakeMotor.getCurrent() > 2) {
+        if (intakeMotor.getVelocity() < jammingVelocityThreshold && intakeMotor.getCurrent() > jammingCurrentThreshhold) {
             State = State.JAMMED;
         }
 

@@ -17,6 +17,8 @@ public class TransferFSM {
         AT_UP,
         MOVING,
         STOPPED,
+        REVERSING,
+        REVERSED
     }
 
     private State currentState = State.START_TO_MOVE;
@@ -32,12 +34,13 @@ public class TransferFSM {
         autoMoveTimer = new Timing.Timer(3, TimeUnit.SECONDS);
     }
 
-    public void updateState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
+    public void updateState(boolean D_Pad_Right_Press, boolean Right_Bumper, boolean XPress) {
         Belt.updateState();
         transferServoFSM.updateState();
-        findTargetState(D_Pad_Right_Press, Right_Bumper);
+        findTargetState(D_Pad_Right_Press, Right_Bumper, XPress);
 
         switch (currentState) {
+
 
             case START_TO_MOVE:
                 Belt.Move();
@@ -47,9 +50,6 @@ public class TransferFSM {
                 break;
 
             case MOVING_DOWN:
-                if (!autoMoveTimer.isTimerOn()) {
-                    autoMoveTimer.start();
-                }
                 transferServoFSM.MoveDown();
                 if (transferServoFSM.AT_DOWN()) {
                     currentState = State.AT_DOWN;
@@ -57,8 +57,12 @@ public class TransferFSM {
                 break;
 
             case MOVING_UP:
+                if (!autoMoveTimer.isTimerOn()) {
+                    autoMoveTimer.start();
+                }
                 transferServoFSM.MoveUp();
                 if (transferServoFSM.AT_UP()) {
+
                     currentState = State.AT_UP;
                 }
                 break;
@@ -69,16 +73,31 @@ public class TransferFSM {
                     currentState = State.STOPPED;
                 }
                 break;
+
+            case REVERSING:
+                Belt.Reverse();
+                if (Belt.REVERSING()) {
+                    currentState = State.REVERSED;
+                }
         }
         telemetry.addData("Transfer Current State ", currentState);
         telemetry.addData("Auto Move Timer ", autoMoveTimer.elapsedTime());
 
     }
 
-    public void findTargetState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
+    public void findTargetState(boolean D_Pad_Right_Press, boolean Right_Bumper, boolean XPress) {
         if (D_Pad_Right_Press && Belt.MOVING()) {
             currentState = State.STOPPING;
         }
+
+        if (XPress && currentState == State.REVERSED){
+            currentState = State.MOVING;
+        }
+
+        if (XPress && currentState == State.MOVING){
+            currentState = State.REVERSING;
+        }
+
         if (D_Pad_Right_Press && Belt.STOPPED()) {
             currentState = State.START_TO_MOVE;
         }
