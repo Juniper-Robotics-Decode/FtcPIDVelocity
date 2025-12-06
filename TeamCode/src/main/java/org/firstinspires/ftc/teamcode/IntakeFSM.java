@@ -23,9 +23,9 @@ public class IntakeFSM {
         this.telemetry = telemetry;
     }
 
-    public void updateState(boolean YPress, boolean D_Pad_Left_Press, boolean XPress) {
+    public void updateState(boolean YPress, boolean D_Pad_Left_Press) {
         Roller.updateState();
-        findTargetState(YPress, D_Pad_Left_Press, XPress);
+        findTargetState(YPress, D_Pad_Left_Press);
         switch (currentState) {
             case RAMPING_UP_TO_EJECT:
                 Roller.eject();
@@ -53,20 +53,12 @@ public class IntakeFSM {
 
     }
 
-    public void findTargetState(boolean YPress, boolean D_Pad_Left_Press, boolean XPress) {
+    public void findTargetState(boolean YPress, boolean D_Pad_Left_Press) {
 
         if (YPress && (currentState == State.READY_TO_INTAKE || currentState == State.STOPPED)) {
             currentState = State.RAMPING_UP_TO_EJECT;
         } else if (YPress && currentState == State.EJECTING) {
             currentState = State.RAMPING_UP_TO_INTAKE;
-        }
-
-        if (XPress && currentState == State.EJECTING){
-            currentState = State.RAMPING_UP_TO_INTAKE;
-        }
-
-        if (XPress && currentState == State.READY_TO_INTAKE){
-            currentState = State.EJECTING;
         }
 
         if (Roller.JAMMED() && !(currentState == State.EJECTING)) {

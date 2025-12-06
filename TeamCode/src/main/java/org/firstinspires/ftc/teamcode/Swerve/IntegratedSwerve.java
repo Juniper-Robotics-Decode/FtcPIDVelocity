@@ -226,8 +226,8 @@ public class IntegratedSwerve extends LinearOpMode {
                 odo.update();
             }
 
-            intakeFSM.updateState(gamepad1.y, gamepad1.dpad_left, gamepad1.x);
-            transferFSM.updateState(gamepad1.dpad_right, gamepad1.right_bumper, gamepad1.x);
+            intakeFSM.updateState(gamepad1.y, gamepad1.dpad_left);
+            transferFSM.updateState(gamepad1.dpad_right, gamepad1.right_bumper);
             //shooterFSM.updateState(gamepad1.b);
 
 

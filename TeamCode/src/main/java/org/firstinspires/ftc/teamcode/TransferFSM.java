@@ -34,10 +34,10 @@ public class TransferFSM {
         autoMoveTimer = new Timing.Timer(3, TimeUnit.SECONDS);
     }
 
-    public void updateState(boolean D_Pad_Right_Press, boolean Right_Bumper, boolean XPress) {
+    public void updateState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
         Belt.updateState();
         transferServoFSM.updateState();
-        findTargetState(D_Pad_Right_Press, Right_Bumper, XPress);
+        findTargetState(D_Pad_Right_Press, Right_Bumper);
 
         switch (currentState) {
 
@@ -85,17 +85,9 @@ public class TransferFSM {
 
     }
 
-    public void findTargetState(boolean D_Pad_Right_Press, boolean Right_Bumper, boolean XPress) {
+    public void findTargetState(boolean D_Pad_Right_Press, boolean Right_Bumper) {
         if (D_Pad_Right_Press && Belt.MOVING()) {
             currentState = State.STOPPING;
-        }
-
-        if (XPress && currentState == State.REVERSED){
-            currentState = State.MOVING;
-        }
-
-        if (XPress && currentState == State.MOVING){
-            currentState = State.REVERSING;
         }
 
         if (D_Pad_Right_Press && Belt.STOPPED()) {
